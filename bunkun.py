@@ -1,122 +1,110 @@
-
-
-def insert(dict):
+import random
+def insert(dict,dict_zai):
     #お金が入っているか判定する関数
     global MEMORYMONEY
-    display=dict
-    print(display)
-
+    print("商品番号　　　　商品名　 　　　　　価格")
+    for key,value in dict.items():
+        product=value[0]
+        price=value[1]
+        print(key.center(8," "),end="")
+        print(product.center(20," "),end="")
+        print(str(price).center(10," "))
+    #print()
     
-    
-    select_number = input("買いたい商品の商品番号を選択してください")
+    print(str("-"*40))
+    select_number = input("買いたい商品の商品番号を選択してください: ")
 
+    if dict_zai[dict[select_number][0]] <= 0:
+        print("在庫がありません")
+        return "dummy"
+    
     try:
-        money = int(input(str(display[select_number][1])+"yen入れてください: "))
+        money = int(input(str(dict[select_number][1])+"yen入れてください: "))
     except ValueError:
         money = 0
 
     MEMORYMONEY += money
 
-    # for key,value in display.items():
-    #     if value[1] <= MEMORYMONEY:
-    #         print(key,value)
+    return dict[select_number][0]
 
-    if MEMORYMONEY >= display[select_number][1]:
-        return payment(True, display[select_number][0])
-    else :
-        return payment(False, display[select_number][0])
 
-def payment(judge, item):
-    #商品が買えるか判定する関数
-    if judge == True:
-        return dispense(item)
-    else :
-        return dispense("ダミー")
-
-def dispense(item):
+def dispense(item, dict):
     #商品を排出する関数
     global MEMORYMONEY
-    if item == "シャーペン":
-        check_purchase = input(item+"を購入しますか(Yes/No): ")
-        
-        while True:
-            if check_purchase == "Yes":
-                MEMORYMONEY -= 300
-                item_count = counter(True,item)
-                print("商品："+item)
-                print("お釣りは"+str(MEMORYMONEY)+"yenです")
-                print("シャーペンの売り上げは"+str(item_count)+"yenです")
-                break
+    for value in dict.values():
+        if item == value[0]:
+            item_list=value
 
-            elif check_purchase == "No":
-                print("お釣りは"+str(MEMORYMONEY)+"yenです")
-                break
-
-            else:
-                check_purchase = input("Yes/Noで入力してください(Yes/No)：")
-        MEMORYMONEY = 0
-        
-    elif item == "消しゴム":
-        check_purchase = input(item+"を購入しますか(Yes/No): ")
-        
-        while True:
-            if check_purchase == "Yes":
-                MEMORYMONEY -= 200
-                item_count = counter(True,item)
-                print("商品："+item)
-                print("お釣りは"+str(MEMORYMONEY)+"yenです")
-                print("消しゴムの売り上げは"+str(item_count)+"yenです")
-                break
-
-            elif check_purchase == "No":
-                print("お釣りは"+str(MEMORYMONEY)+"yenです")
-                break
-
-            else:
-                check_purchase = input("Yes/Noで入力してください(Yes/No)：")
-        MEMORYMONEY = 0
-
-    else:
-        diff_money = 300 - MEMORYMONEY
-        item_count = counter(False,item)
+    if MEMORYMONEY<item_list[1]:
+        diff_money = item_list[1] - MEMORYMONEY
         print(str(diff_money)+"yenのお金が足りないよ")
-        #print("売り上げは"+str(item_count)+"yenです")
 
-def counter(cnt,item):
-    #商品をカウントする関数
-    global CNTITEM_sy
-    global CNTITEM_kesi
-    if item == "シャーペン":
-        if cnt:
-            CNTITEM_sy += 1
-            sales = CNTITEM_sy * 300
-            return sales
-        else:
-            sales = CNTITEM_sy * 300
-            return sales
-    elif item == "消しゴム":
-        if cnt:
-            CNTITEM_kesi += 1
-            sales = CNTITEM_kesi * 200
-            return sales
-        else:
-            sales = CNTITEM_kesi * 200
-            return sales
     else:
-        return 
+        check_purchase = input(item_list[0]+"を購入しますか(Yes/No): ")
 
+            
+        while True:
+            if check_purchase == "Yes":
+                MEMORYMONEY -= item_list[1]
+                print("💖"*20)
+                print("商品："+item_list[0])
+                print("お釣りは"+str(MEMORYMONEY)+"yenです")
+                i = random.randint(1,3)
+                if i == 1:
+                    print('今日も一日いいことがありますように')
+                print('お買い上げありがとうございました')
+                print("💖"*20)
+                break
+
+            elif check_purchase == "No":
+                print("✋"*20)
+                print("お釣りは"+str(MEMORYMONEY)+"yenです")
+                print("ご利用ありがとうございました")
+                print("✋"*20)
+                break
+
+            else:
+                check_purchase = input("Yes/Noで入力してください(Yes/No)：")
+        MEMORYMONEY = 0
+        return item_list
+
+    # else:
+    #     diff_money = value[1] - MEMORYMONEY
+    #     #item_count = counter(False,item)
+    #     print(str(diff_money)+"yenのお金が足りないよ")
+    #     #print("売り上げは"+str(item_count)+"yenです")
+
+def counter(item_list, dict_uri,dict_zai):
+    #商品をカウントする関数
+    sum_uri = 0
+
+    print(str("-"*20+"管理者モード"+"-"*20))
+    for key,value in dict_uri.items():
+        if key == item_list[0]:
+            dict_uri[key] += item_list[1]
+            dict_zai[key] -= 1
+            print(key + "の売り上げは"+str(dict_uri[key])+"yenです")
+        sum_uri += dict_uri[key]
+        print(str(key)+":"+str(dict_zai[key])+"個")
+    print("全体の売り上げは" + str(sum_uri) + "yenです")
+            
     
 def main():
-    dict_bunkun={"1":["シャーペン",300], "2":["消しゴム",200]}
-    print(dict_bunkun["1"][0])
+    dict_bunkun={"1":["シャーペン",300], "2":["消しゴム",100],"3":["ルーズリーフ",150],"4":["シャー芯",200],"5":["シャー消しセット",500]}
+    dict_uri = {"シャーペン":0, "消しゴム":0, "ルーズリーフ":0, "シャー芯":0,"シャー消しセット":0}
+    dict_zai = {"シャーペン":100, "消しゴム":10, "ルーズリーフ":0, "シャー芯":0,"シャー消しセット":0}
+
     global MEMORYMONEY
     while True:
-        print(str("-"*40))
+        print(str("*"*40))
         print('現在の投入金額は次の通りです:'+str(MEMORYMONEY)+"yenです")
-        insert(dict_bunkun)
+        item = insert(dict_bunkun,dict_zai)
+        if item != "dummy":
+            item_list = dispense(item, dict_bunkun)
+            counter(item_list, dict_uri,dict_zai)
+        
+
 
 if __name__ == "__main__":
-    CNTITEM_sy = 0
-    CNTITEM_kesi = 0
     MEMORYMONEY = 0
     main()
