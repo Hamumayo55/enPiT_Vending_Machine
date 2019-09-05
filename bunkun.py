@@ -101,7 +101,8 @@ def main():
         item = insert(dict_bunkun,dict_zai)
         if item != "dummy":
             item_list = dispense(item, dict_bunkun)
-            counter(item_list, dict_uri,dict_zai)
+            if item_list != None:
+                counter(item_list, dict_uri,dict_zai)
         
 
 
